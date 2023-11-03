@@ -29,13 +29,9 @@ int main() {
     int sx, sy;
     getmaxyx(stdscr, sy, sx);
 
-    std::unique_ptr<Deck> deck = std::make_unique<StandardDeck>();
+    Game game;
 
-    deck->shuffle();
-
-    for (auto c : *deck) {
-        c.display(COLOR_WHITE, COLOR_CYAN, rand() % sx, rand() % sy);
-    }
+    game.display();
 
 
     getch();

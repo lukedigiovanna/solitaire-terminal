@@ -23,9 +23,9 @@ class Game {
     private:
         vector<Action> history;
         std::unique_ptr<Deck> deck;
-        vector<char> tableaus[7];
+        std::unique_ptr<Deck> tableaus[7];
         int tableauPositions[7]; // marks the first card that is face up
-        int piles[4];
+        std::unique_ptr<Deck> piles[4];
         int currCard;
 
         bool executeDrawCard();
