@@ -23,10 +23,10 @@ class Game {
     private:
         vector<Action> history;
         std::unique_ptr<Deck> deck;
+        std::unique_ptr<Deck> turnedDeck;
         std::unique_ptr<Deck> tableaus[7];
         int tableauPositions[7]; // marks the first card that is face up
         std::unique_ptr<Deck> piles[4];
-        int currCard;
 
         bool executeDrawCard();
         bool executeMove(int from, int to, int quantity);

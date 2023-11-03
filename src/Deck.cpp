@@ -20,6 +20,10 @@ int Deck::size() const {
     return this->cards.size();
 }
 
+Card Deck::get_top_card() {
+    return *(this->cards.end() - 1);
+}
+
 Card Deck::draw_card_top() {
     Card c = *(this->cards.end() - 1);
     this->cards.pop_back();

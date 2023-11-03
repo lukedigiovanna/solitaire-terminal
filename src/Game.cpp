@@ -4,10 +4,11 @@
 
 using namespace std;
 
-Game::Game() : currCard(0) {
-    // for (int i = 0; i < 4; i++) piles[i] = 0;
+Game::Game() {
     deck = std::make_unique<StandardDeck>();
     deck->shuffle();
+
+    turnedDeck = std::make_unique<Deck>();
     
     for (int i = 0; i < 7; i++) {
         tableaus[i] = std::make_unique<Deck>();
@@ -26,11 +27,34 @@ Game::Game() : currCard(0) {
 }
 
 void Game::display() const {
+    int tx, ty;
+
+    tx = 3;
+    ty = 3;
+
+    if (deck->size() > 0) {
+        wmove(stdscr, tx, ty);
+        Card::display_back(COLOR_RED, COLOR_WHITE, tx, ty);
+    }
+
+    tx += CARD_WIDTH + 1;
+
+    if (turnedDeck->size() > 0) {
+        wmove(stdscr, tx, ty);
+        turnedDeck->get_top_card().display(COLOR_WHITE, COLOR_CYAN, tx, ty);
+    }
+
     for (int i = 0; i < 7; i++) {
-        int tx = 3 + i * (CARD_WIDTH + 2);
-        int ty = 3;
-        for (auto c : *(tableaus[i])) {
-            c.display(COLOR_WHITE, COLOR_BLACK, tx, ty++);
+        tx = 3 + i * (CARD_WIDTH + 2);
+        ty = 3 + 2 + CARD_HEIGHT;
+        for (int j = 0; j < tableaus[i]->size(); j++) {
+            if (j < tableauPositions[i]) {
+                Card::display_back(COLOR_RED, COLOR_WHITE, tx, ty);
+            }
+            else {
+                (*tableaus[i])[j].display(COLOR_WHITE, COLOR_BLACK, tx, ty);
+            }
+            ty += 2;
         }
     }
 }

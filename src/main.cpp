@@ -33,7 +33,6 @@ int main() {
 
     game.display();
 
-
     getch();
 
     endwin();

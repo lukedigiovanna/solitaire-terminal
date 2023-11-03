@@ -3,7 +3,7 @@ VPATH = src
 # Specify the object files
 OBJS = main.o Game.o Card.o Deck.o termutils.o
 # Directory for object files
-OBJDIR = src
+OBJDIR = build
 
 CXXFLAGS := -std=c++17 -I/opt/homebrew/Cellar/ncurses/6.4/include -D_XOPEN_SOURCE_EXTENDED
 LDFLAGS := -L/opt/homebrew/Cellar/ncurses/6.4/lib -lncursesw

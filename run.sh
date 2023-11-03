@@ -1,3 +1,3 @@
 make
 ./solitaire
-make clean
+# make clean

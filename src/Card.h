@@ -2,8 +2,8 @@
 
 #include <string>
 
-#define CARD_WIDTH 14
-#define CARD_HEIGHT 10
+#define CARD_WIDTH 15
+#define CARD_HEIGHT 11
 
 enum Color {
     BLACK,
@@ -26,6 +26,9 @@ class Card {
         int value;
     public:
         static const std::wstring value_titles[];
+        static const std::wstring value_titles_upside_down[];
+
+        static void display_back(int bg_color, int fg_color, int tx, int ty);
 
         Card(Suit suit, int value);
         void display(int bg_color, int fg_color, int tx, int ty) const;

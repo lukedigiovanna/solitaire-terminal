@@ -13,7 +13,9 @@ class Deck {
 
         void shuffle();
         int size() const;
-        // Draws a card from the top of the stack
+        // Gets the top card but does not remove it
+        Card get_top_card();
+        // Draws a card from the top of the stack and returns it
         Card draw_card_top();
         // Draws a card from the bottom of the stack
         // Card draw_card_bottom();
