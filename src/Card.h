@@ -26,9 +26,9 @@ class Card {
         int value;
     public:
         static const std::wstring value_titles[];
-        static const std::wstring value_titles_upside_down[];
 
         static void display_back(int bg_color, int fg_color, int tx, int ty);
+        static void display_empty(int bg_color, int fg_color, int tx, int ty);
 
         Card(Suit suit, int value);
         void display(int bg_color, int fg_color, int tx, int ty) const;

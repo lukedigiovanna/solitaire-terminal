@@ -1,7 +1,7 @@
 VPATH = src
 
 # Specify the object files
-OBJS = main.o Game.o Card.o Deck.o termutils.o
+OBJS = main.o Game.o Card.o Deck.o termutils.o mathutils.o
 # Directory for object files
 OBJDIR = build
 

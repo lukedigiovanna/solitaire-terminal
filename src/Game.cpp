@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "mathutils.h"
 #include <iostream>
 #include <ncursesw/curses.h>
 
@@ -22,11 +23,17 @@ Game::Game() {
         for (int j = i + 1; j--;) {
             tableaus[i]->add_card_top(deck->draw_card_top());
         }
-        tableauPositions[i] = i;
+        tableauPositions[i] = 0;
     }
 }
 
-void Game::display() const {
+void Game::display(UIControls controls) const {
+    static int HIGHLIGHT_COLOR = COLOR_GREEN;
+    wmove(stdscr, 0, 0);
+    addwstr(to_wstring(static_cast<int>(controls.current)).c_str());
+    wmove(stdscr, 1, 0);
+    addwstr(to_wstring(static_cast<int>(-1 % 2)).c_str());
+    
     int tx, ty;
 
     tx = 3;
@@ -34,14 +41,32 @@ void Game::display() const {
 
     if (deck->size() > 0) {
         wmove(stdscr, tx, ty);
-        Card::display_back(COLOR_RED, COLOR_WHITE, tx, ty);
+        Card::display_back(controls.selected(GameElement::DRAW_STACK) ? HIGHLIGHT_COLOR : COLOR_RED, COLOR_WHITE, tx, ty);
+    }
+    else {
+        Card::display_empty(COLOR_BLACK, controls.selected(GameElement::DRAW_STACK) ? HIGHLIGHT_COLOR : COLOR_WHITE, tx, ty);
     }
 
-    tx += CARD_WIDTH + 1;
+    tx += CARD_WIDTH + 2;
 
+    wmove(stdscr, tx, ty);
     if (turnedDeck->size() > 0) {
-        wmove(stdscr, tx, ty);
-        turnedDeck->get_top_card().display(COLOR_WHITE, COLOR_CYAN, tx, ty);
+        turnedDeck->get_top_card().display(controls.selected(GameElement::WASTE_STACK) ? HIGHLIGHT_COLOR : COLOR_WHITE, COLOR_CYAN, tx, ty);
+    }
+    else {
+        Card::display_empty(COLOR_BLACK, controls.selected(GameElement::WASTE_STACK) ? HIGHLIGHT_COLOR : COLOR_WHITE, tx, ty);
+    }
+
+    tx += (CARD_WIDTH + 2) * 2;
+    for (int i = 0; i < 4; i++) {
+        bool selected = controls.selected(static_cast<GameElement>(static_cast<int>(GameElement::FOUNDATION_CLUBS) + i));
+        Card::display_empty(
+            COLOR_BLACK, 
+            selected ? HIGHLIGHT_COLOR : COLOR_WHITE, 
+            tx, 
+            ty
+        );
+        tx += CARD_WIDTH + 2;
     }
 
     for (int i = 0; i < 7; i++) {
@@ -52,11 +77,17 @@ void Game::display() const {
                 Card::display_back(COLOR_RED, COLOR_WHITE, tx, ty);
             }
             else {
-                (*tableaus[i])[j].display(COLOR_WHITE, COLOR_BLACK, tx, ty);
+                bool selected = controls.selected(static_cast<GameElement>(static_cast<int>(GameElement::TABLEAU_0) + i));
+                selected &= controls.tableauRow >= tableaus[i]->size() - 1 - j;
+                (*tableaus[i])[j].display(selected ? HIGHLIGHT_COLOR : COLOR_WHITE, COLOR_BLACK, tx, ty);
             }
             ty += 2;
         }
     }
+}
+
+const std::array<int, 7>& Game::getTableauPositions() const {
+    return tableauPositions;
 }
 
 bool Game::execute(Action action) {
@@ -89,4 +120,60 @@ bool Game::executeMove(int from, int to, int quantity) {
 
     }
     return false;
+}
+
+UIControls::UIControls() : current(GameElement::DRAW_STACK), tableauRow(0) {
+
+}
+
+bool UIControls::selected(GameElement element) const {
+    return current == element;
+}
+
+void UIControls::move(int d) {
+    int nc = static_cast<int>(current) + d;
+    if (isTableau()) {
+        nc = wrap(nc, static_cast<int>(GameElement::TABLEAU_0), static_cast<int>(GameElement::TABLEAU_6));
+    }
+    else {
+        nc = wrap(nc, static_cast<int>(GameElement::DRAW_STACK), static_cast<int>(GameElement::FOUNDATION_SPADES));
+    }
+    current = static_cast<GameElement>(nc);
+    tableauRow = 0;
+}
+
+void UIControls::moveRight() {
+    move(1);
+}
+
+void UIControls::moveLeft() {
+    move(-1);
+}
+
+void UIControls::moveUp(const Game& game) {
+    tableauRow++;
+}
+
+void UIControls::moveDown() {
+    tableauRow--;
+    if (tableauRow < 0) tableauRow = 0;
+}
+
+void UIControls::toggleTableau() {
+    int nc = static_cast<int>(current);
+    if (isTableau()) {
+        if (current == GameElement::TABLEAU_6) { // special case
+            current = GameElement::FOUNDATION_SPADES;
+            return;
+        }
+        nc -= static_cast<int>(GameElement::TABLEAU_0);
+    }
+    else {
+        nc += static_cast<int>(GameElement::TABLEAU_0);
+    }
+    current = static_cast<GameElement>(nc);
+}
+
+bool UIControls::isTableau() const {
+    return current >= GameElement::TABLEAU_0 && current <= GameElement::TABLEAU_6;
 }
