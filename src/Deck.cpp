@@ -16,15 +16,15 @@ void Deck::shuffle() {
     }
 }
 
-int Deck::size() const {
+size_t Deck::size() const {
     return this->cards.size();
 }
 
-Card Deck::get_top_card() {
+Card Deck::getTopCard() {
     return *(this->cards.end() - 1);
 }
 
-Card Deck::draw_card_top() {
+Card Deck::drawCardTop() {
     Card c = *(this->cards.end() - 1);
     this->cards.pop_back();
     return c;
@@ -36,7 +36,7 @@ Card Deck::draw_card_top() {
 //     return c;
 // }
 
-void Deck::add_card_top(Card c) {
+void Deck::addCardTop(Card c) {
     this->cards.push_back(c);
 }
 

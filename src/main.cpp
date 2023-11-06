@@ -25,17 +25,26 @@ int main() {
     cbreak();
     noecho();
     keypad(stdscr, true);
+    set_escdelay(25);
     start_color();
     init_colors();
     int sx, sy;
     getmaxyx(stdscr, sy, sx);
 
     Game game;
-    UIControls controls;
+    ColorTheme theme = {
+        .bgColor=COLOR_RED,
+        .fgColor=COLOR_BLACK,
+        .enteredColor=COLOR_YELLOW,
+        .highlightColor=COLOR_GREEN
+    };
+    UIControls controls = UIControls(game, theme);
 
     game.display(controls);
 
-    while (1) {
+    bool quit = false;
+
+    while (!quit) {
         int ch = getch();
 
         switch (ch) {
@@ -46,14 +55,20 @@ int main() {
                 controls.moveLeft();
                 break;
             case KEY_UP:
-                controls.moveUp(game);
+                controls.moveUp();
                 break;
             case KEY_DOWN:
                 controls.moveDown();
                 break;
+            case 10: // Enter
+                controls.selectCurrent();
+                break;
             case ' ':
+            case 9: // Horizontal tab
                 controls.toggleTableau();
                 break;
+            case 27: // Escape key
+                quit = true;
         }
 
         game.display(controls);

@@ -12,15 +12,15 @@ class Deck {
         Deck();
 
         void shuffle();
-        int size() const;
+        size_t size() const;
         // Gets the top card but does not remove it
-        Card get_top_card();
+        Card getTopCard();
         // Draws a card from the top of the stack and returns it
-        Card draw_card_top();
+        Card drawCardTop();
         // Draws a card from the bottom of the stack
         // Card draw_card_bottom();
         // Adds a card to the top of the stack
-        void add_card_top(Card c);
+        void addCardTop(Card c);
         // Adds a card to the bottom of the stack
         // void add_card_bottom(Card c);
 

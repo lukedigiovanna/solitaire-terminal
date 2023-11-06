@@ -21,15 +21,15 @@ struct Suit {
 };
 
 class Card {
-    private:
-        Suit suit;
-        int value;
     public:
         static const std::wstring value_titles[];
 
         static void display_back(int bg_color, int fg_color, int tx, int ty);
         static void display_empty(int bg_color, int fg_color, int tx, int ty);
 
+        Suit suit;
+        int value;
+    
         Card(Suit suit, int value);
         void display(int bg_color, int fg_color, int tx, int ty) const;
 };
